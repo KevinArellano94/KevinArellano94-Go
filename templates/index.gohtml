@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head></head>
+  <body>
+    <h1>{{ .Title }}</h1>
+
+    <ul>
+      {{ range .Todos }}
+        {{ if .Done }}
+          <li class="done">{{ .Item }}</li>
+        {{ else }}
+          <li>{{ .Item }}</li>
+        {{ end }}
+      {{ end }}
+    </ul>
+  </body>
+</html>
