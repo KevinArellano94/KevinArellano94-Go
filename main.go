@@ -12,7 +12,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Fprint(w, "Kevin Arellano!")
+	fmt.Fprint(w, "<!DOCTYPE html><html><head></head><body>Kevin Arellano!</body></html>")
 }
 
 func about(w http.ResponseWriter, r *http.Request) {
