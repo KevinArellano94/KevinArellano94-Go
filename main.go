@@ -1,51 +1,40 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"text/template"
+	"os"
 )
 
-var tmpl *template.Template
-
-type Todo struct {
-	Item string
-	Done bool
-}
-
-type PageData struct {
-	Title string
-	Todos []Todo
-}
-
-func todo(w http.ResponseWriter, r *http.Request) {
-	data := PageData{
-		Title: "Kevin Arellano",
-		Todos: []Todo{
-			{Item: "Install Go", Done: true},
-			{Item: "Learn Go", Done: false},
-			{Item: "Yup", Done: false},
-		},
+func index(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
 	}
-	tmpl.Execute(w, data)
+	fmt.Fprint(w, "Kevin Arellano!")
 }
 
 func about(w http.ResponseWriter, r *http.Request) {
-	data := PageData{
-		Title: "About",
-		Todos: []Todo{
-			{Item: "Welcome to the about page", Done: true},
-		},
+	if r.URL.Path != "/about" {
+		http.NotFound(w, r)
+		return
 	}
-	tmpl.Execute(w, data)
+	fmt.Fprint(w, "About!")
 }
 
 func main() {
-	mux := http.NewServeMux()
-	tmpl = template.Must(template.ParseFiles("templates/index.gohtml"))
+	http.HandleFunc("/", index)
+	http.HandleFunc("/about", about)
 
-	mux.HandleFunc("/about", about)
-	mux.HandleFunc("/", todo)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
 
-	log.Fatal(http.ListenAndServe(":3000", mux))
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
