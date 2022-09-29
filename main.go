@@ -1,31 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprint(w, "<!DOCTYPE html><html><head></head><body>Kevin Arellano!</body></html>")
-}
-
-func about(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/about" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprint(w, "About!")
-}
-
 func main() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/about", about)
+	fs := http.FileServer(http.Dir("./frontend/build"))
+	http.Handle("/", fs)
 
 	port := os.Getenv("PORT")
 	if port == "" {
